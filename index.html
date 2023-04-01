@@ -1,7 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Chat Window</title>
+	
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+    
+
+    <section>
+        <h1>Chat Popup</h1>
+        <p>Click on the chat button to start chatting</p>
+
+        <button class="chat-btn"> 
+            <i class="material-icons"> comment </i>
+        </button>
+
+        <div class="chat-popup">
+            
+            <div class="chat-area" id="chat-area">
+             <div class="income-msg">
+                 <img src="/static/person.jpg" class="avatar" alt="">
+                 <span class="msg"> Hi!This is your virtual agent I can help you with your queries.</span>
+             </div>   
+            </div>
+
+            <div id="userInput">
+         <!--<input id="textInput" type="text" name="msg" placeholder="Message">-->
+        
+		<input type="text" name="q" id="transcript" placeholder="Enter your text here" /><input id="buttonInput" type="submit" value="Send">
+		<input id="dataOutPut" type="hidden" name="msg">
+      </div>
+        </div>
+    </section>
+
+    <script>
+        function getBotResponse() {
+          
+		  var rawText = $("#transcript").val();
+		 // alert(rawText);
+		 console.log(rawText)
+          var userHtml = '<div class="out-msg"><span class="my-msg">'+rawText +'</span><img src="/static/me.jpg" class="avatar"></div>';
+          $("#transcript").val("");
+          $(userHtml).appendTo(".chat-area");
+		  $.get("/get", { msg: rawText }).done(function(data) {
+            var botHtml = '<div class="income-msg"><img src="/static/person.jpg" class="avatar" alt=""><span class="msg">' +data+'</span></div>  ';
+			//alert(data);
+			$("#dataOutPut").append = data;
+			$(botHtml).appendTo(".chat-area");
+            
+            document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+			
+			
+          });
+          
+			
+			
+          
+        }
+        $("#textInput").keypress(function(e) {
+            if(e.which == 13) {
+                 var outPut = $("#dataOutPut").val();
+				 //var botText = $('p').text()
+				getBotResponse();
+				
+            }
+        });
+        $("#buttonInput").click(function() {
+           //var rawText = $("#textInput").val();
+		   //var botText = $('p').text()
+		   var outPut = $("#dataOutPut").val();
+		  
+		  getBotResponse();
+        })
+      </script>
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.1.1/dist/index.min.js"></script>
+    <script src="/static/main.js"></script>
 </body>
 </html>
