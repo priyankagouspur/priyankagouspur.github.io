@@ -1,305 +1,75 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IndiPedia</title>
+
+    <link rel="stylesheet" href="static/css/chat.css">
+    <link rel="stylesheet" href="static/css/home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="style.css">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src='//www.aa.com/jquery.js'></script>
-    <script src="fuzzyset.js"></script>
 
-    <style>
-      #voice-input-btn {
-        border: none;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 25px;
-        margin: 4px 2px;
-        cursor: pointer; 
-        border-radius: 50%;
-      }
+</head>
 
-      #answer-box {
-        border: 1px solid black;
-        padding: 10px;
-        margin-top: 10px;
-      }
-      .jumbotron {
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="jumbotron">
-        <h1>IndiPedia</h1>
-        <p>Welcome to IndiPedia where you can get information about India and its diverse culture, that can make your travel to India easy.</p>
-            <button id="voice-input-btn"><i class="fa fa-microphone"></i></button>
-            <input type="text" id="text-input" placeholder="Typer your question...">
-            <button id="submit-btn"  class="btn btn-danger btn-lg">Submit</button>
-            <div id="answer-box"></div>
-            <div id="answer"></div>
+<body>
+    <!-- CHAT BAR BLOCK -->
+    <div style="text-align: center;">
+    <h1>IndiPedia</h1>
+    <h2>Welcome to IndiPedia where you can get information about India and its diverse culture, that can make your travel to India easy.</h2>
+    <p>Click on here to get the FAQ document!! <p>
+        <a href="./static/FAQ-Doc.pdf" download>
+            <button class="button button1">FAQ Document</button>
+                </a>
+    </div>
+    <div class="chat-bar-collapsible">
+        <button id="chat-button" type="button" class="collapsible">Ask me!
+            <i id="chat-icon" style="color: #fff;" class="fa fa-fw fa-comments-o"></i>
+        </button>
+
+        <div class="content">
+            <div class="full-chat-block">
+                <!-- Message Container -->
+                <div class="outer-container">
+                    <div class="chat-container">
+                        <!-- Messages -->
+                        <div id="chatbox">
+                            <h5 id="chat-timestamp"></h5>
+                            <p id="botStarterMessage" class="botText"><span>Loading...</span></p>
+                        </div>
+
+                        <!-- User input box -->
+                        <div class="chat-bar-input-block">
+                            <div id="userInput">
+                                <input id="textInput" class="input-box" type="text" name="msg"
+                                    placeholder="Tap 'Enter' to send a message">
+                                <p></p>
+                            </div>
+
+                            <div class="chat-bar-icons">
+                                <i id="chat-icon" style="color: #333;" class="fa fa-fw fa-send"
+                                    onclick="sendButton()"></i>
+                            </div>
+                        </div>
+
+                        <div id="chat-bar-bottom">
+                            <p></p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
+
     </div>
-   <!-- <h1>IndiPedia</h1>
-    <div>
-        Welcome to IndiPedia where you can get information about India and its diverse culture, that can make your travel to India easy.
-    </div>
-    <div id="answer"></div>
-    <button id="voice-input-btn"><i class="fa fa-microphone"></i></button>
-    <input type="text" id="text-input" placeholder="Type your question...">
-    <button id="submit-btn"  class="btn btn-danger btn-lg">Submit</button>
-    <div id="answer-box"></div>
--->
-    <script>
 
-      var isClose=true;
-        const stopwords = ["of", "the", "a", "an", "any", "is", "can", "who", "what", "why", "whom", "spoken", "used", "in", "people", "speak", "food"];
-        var editor = "sorts\n"+
-    "#city = {hyderabad, bangalore, mumbai, vizag, chennai, thrivendram }.\n"+
-    "#states = {telangana, karnataka, maharashtra, andhrapradesh,tamilnadu,kerala}.\n"+ 
-    "#dishes = {biryani, mysorepak, vadapav, bamboochicken, sambhar, idiyappam}.\n"+
-    "#languages = {telugu, tamil, kannada, malayalam, marathi}.\n"+
-    "#places = {charminar, mysore_palace, gate_way_of_india, beach, marina_beach, backwaters}.\n"+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="static/scripts/responses.js"></script>
+<script src="static/scripts/chat.js"></script>
+<script src="static/scripts/fuzzyset.js"></script>
 
 
-"predicates\n"+ 
-                "capital( #city,#states).\n"+
-                "dish(#city, #dishes).\n"+
-                "language(#languages, #states).\n"+
-                "famousplace(#places,#city).\n"+
-
-"rules\n"+
-                "capital(hyderabad, telangana).\n"+
-                "capital(bangalore, karnataka).\n"+
-                "capital(mumbai, maharashtra).\n"+
-                "capital(vizag, andhrapradesh).\n"+
-                "capital(chennai,tamilnadu).\n"+
-                "capital(thrivendram, kerala).\n"+
-
-                "dish(hyderabad, biryani).\n"+
-                "dish(bangalore, mysorepak).\n"+
-                "dish(mumbai, vadapav).\n"+
-                "dish(vizag, bamboochicken).\n"+
-                "dish(chennai, sambhar).\n"+
-                "dish(thrivendram, idiyappam).\n"+
-
-                "language(telugu, telangana).\n"+
-                "language(kannada,karnataka).\n"+
-                "language(marathi,maharashtra).\n"+
-                "language(malayalam,kerala).\n"+
-                "language(telugu,andhrapradesh).\n"+
-                "language(tamil, tamilnadu).\n"+
-
-                "famousplace(charminar, hyderabad).\n"+
-                "famousplace(mysore_palace, bangalore).\n"+
-                "famousplace(gate_way_of_india, mumbai).\n"+
-                "famousplace(beach, vizag).\n"+
-                "famousplace(marina_beach, chennai).\n"+
-                "famousplace(backwaters, thrivendram)." ;
-
-
-
-        // sorts
-        var contstring = editor.split("sorts\n")[1].split("predicates\n");
-        var sortstring = contstring[0].split('.');
-        sortstring.splice(-1, 1);
-        var sorts = {};
-        sortstring = sortstring.map(d => d.replace(/\n/g, '').trim()).forEach(d => {
-            var par = d.split("=");
-            sorts[par[0].replace(/#/, '').trim()] = par[1].replace(/{|}/g, '').split(',').map(w => w.trim())
-        });
-        // predicates
-        var predicates = {};
-        contstring = contstring[1].split("rules\n");
-        sortstring = contstring[0].split('.');
-        sortstring.splice(-1, 1);
-        sortstring.forEach(d => {
-            var part = d.replace(/\n/g, '').trim().split('(');
-            var func = part[0];
-            predicates[func] = {};
-            var par = part[1].split(',').map(e => e.replace(/#|\)/g, '').trim());
-            var par1 = sorts[par[0]].slice();
-            par1.push("X");
-            par.splice(0, 1);
-            par1.forEach(e => {
-                var strinh = (e == 'X' ? '' : (e + ' ')) + func;
-                predicates[func][strinh] = func + "(" + e + ")";
-                par.forEach(par2 => {
-                    var temp = sorts[par2].slice();
-                    temp.push("X");
-                    temp.forEach(t => {
-                        var strinh = (e == 'X' ? '' : (e + ' ')) + func + (t == 'X' ? '' : (' ' + t));
-                        // if (strinh != fubnc)
-                        predicates[func][strinh] = func + "(" + e + "," + t + ")";
-                    })
-                });
-            });
-        });
-
-
-        var all_predicates = [];
-        for (var key1 in predicates) {
-            if (predicates.hasOwnProperty(key1)) {
-                for (var key2 in predicates[key1]) {
-                    if (predicates[key1].hasOwnProperty(key2))
-                        all_predicates.push(key2);
-                }
-            }
-
-        }
-        all_predicates.push('speak spanish'); // extra terms
-        a = FuzzySet(all_predicates);
-      
-      console.log(all_predicates)
-      
-      
-      // Speech recognition API
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
-
-      // Get DOM elements
-      const answerDiv = document.querySelector('#answer');
-      const voiceBtn = document.getElementById('voice-input-btn');
-      const textInput = document.getElementById('text-input');
-      const submitBtn = document.getElementById('submit-btn');
-      const answerBox = document.getElementById('answer-box');
-
-      submitBtn.addEventListener('click', () => {
-        var question = textInput.value;
-        var tp; 
-        if (question.trim() === '') {
-          answerBox.innerHTML = 'Please ask a question.';
-          return;
-        }
-        var trim_script = question.split(" ");
-        trim_script = trim_script.filter(f => !stopwords.includes(f));
-        var queryQues = a.get(trim_script.join(" "), null, 0.5); 
-        console.log(queryQues);
-        getAnswer(queryQues);
-        
-      });
-
-      // Handle speech recognition
-      recognition.onresult = event => {
-        const resultIndex = event.resultIndex;
-        const transcript = event.results[resultIndex][0].transcript;
-        textInput.value = transcript;
-        
-        var trim_script = transcript.split(" ");
-        trim_script = trim_script.filter(f => !stopwords.includes(f));
-        var queryQues = a.get(trim_script.join(" "), null, 0.5);
-        console.log(queryQues);
-        getAnswer(queryQues);
-      };
-
-      // Handle click on voice input button     
-      function startSpeechRecognition() {
-        recognition.start();
-      }
-      voiceBtn.addEventListener('click', startSpeechRecognition);
-
-
-      function getAnswer(question) {
-        
-        if (question!=null) {
-                var mainkey = question[0][1].replace('speak ','');
-                var answerarr = mainkey.split(' ');
-                var key1 = '';
-                answerarr.forEach(d => {
-                    key1 = (predicates[d] != undefined) ? d : key1;
-                });
-                //var key1 = answerarr.length>2? answerarr[1]:answerarr[0];
-                var key2 = mainkey;
-                console.log(key1 +'-'+ key2);
-                console.log(predicates[key1][key2]);
-                
-                var data = {
-                    'action': "getQuery",
-                    'query': predicates[key1][key2],
-                    'editor': editor
-                };
-          
-          console.log(data)
-          
-          
-          
-          $.ajax({
-          url: "https://cors-anywhere.herokuapp.com/http://wave.ttu.edu/ajax.php",
-          type: "POST",
-          headers: {
-            "X-Requested-With": "XMLHttpRequest"
-          },
-          data: {
-            action: "getQuery",
-            query: predicates[key1][key2],
-            editor: editor
-          },
-          success: function(response) {
-            console.log(response);
-             if(response){
-                const justAns = response.split("=").pop().toUpperCase();
-                answerDiv.innerHTML = justAns;
-                answerBox.innerHTML = justAns;
-             } else{
-                const answer = 'Sorry, I could not find an answer.';
-                answerDiv.innerHTML = answer;
-                answerBox.innerHTML = answer;
-                }
-             },
-          error: function(xhr, status, error) {
-            console.log("error: " + error);
-          }
-        });
-
-
-
-          
-          //$.post("http://localhost/ajax.php", { url: "http://wave.ttu.edu/" , data:data}, function (response) {
-                // Expected response : answer sets
-                //$.post("http://localhost/ajax/ajax.js",  function (response) {
-                //$.post("http://localhost/ajaxtest.php", function (response) {  
-                 // $.post("https://cors-anywhere.herokuapp.com/http://wave.ttu.edu/", data, function (response) {
-                  
-                   // console.log(response);
-                  
-                  
-                   // var html = document.createElement("html");
-                   // html.innerHTML = response;
-                    // contentRan
-                   // var answerstring = html.querySelector("p").textContent.replace(/X =/gm, "");
-                  //  var answerarr = answerstring.split("\n");
-                  //  answerarr.splice(-1,1);
-                 //   console.log(answerarr);
-                 //   var pre_string = "The answer to your question " + transcript + " is ";
-                 //   answerstring = contentRan.answer[answerarr[0].toLowerCase().trim()]==undefined?
-                 //       (pre_string + (answerarr.length==1?answerstring:(answerarr.splice(-1, 0, "and"),answerarr.join())))
-                 //       : generaspeak(contentRan.answer[answerarr[0].toLowerCase().trim()]);
-                //    console.log(answerstring);
-                  
-                //   const answer = answerstring || 'Sorry, I could not find an answer.';
-               //   answerDiv.innerHTML = answer;
-               //   answerBox.innerHTML = answer;
-               //   console.log(answer);
-                    
-               // });
-            }
-        }
-        
- 
-
-    </script>
-  </body>
 </html>
