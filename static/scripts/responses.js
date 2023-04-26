@@ -56,9 +56,10 @@ function getBotResponse(input) {
         "#famousplaces = {taj_mahal, red_fort, golden_temple, hawa_mahal, ajmer_sharif_dargah,pushkar_lake, mysore_palace, sabarmati_ashram, india_gate, qutub_minar, amer_fort, ajanta_caves, ellora_caves, khajuraho_temples, konark_sun_temple, meenakshi_temple, mysorepalace, charminar, victoria_memorial, jantar_mantar, fatehpur_sikri, hampi_ruins, jaipur_city_palace, jaisalmer_fort, udaipur_city_palace, sabarmati_ashram, ranthambore_national_park, kanha_national_park, bandipur_national_park, sundarbans_national_park, valley_of_flowers_national_park, gir_national_park}.\n"+
         "#politicians = { narendra_modi, rajnath_singh, amit_shah,nirmala_sitharaman, smriti_irani, subrahmanyam_jaishankar, piyush_goyal }.\n"+
         "#actors = {shah_rukh_khan, rajnikanth}.\n"+
-        "#movies = {bahubali}.\n"+
+        "#movies = {bahubali, dangal}.\n"+
     "predicates\n"+
                     "capital( #city,#states).\n"+
+                    "iscapital(#city,#states).\n"+
                     "famous_dish(#dishes, #states).\n"+
                     "language(#languages, #states).\n"+
                     "famousplace(#famousplaces,#city).\n"+
@@ -68,13 +69,29 @@ function getBotResponse(input) {
                     "home_minister(#politicians).\n"+
                     "famous_actor(#actors).\n"+
                     "movie(#movies).\n"+
+                    "isprimeminister(#politicians).\n"+
+                    "leader(#politicians).\n"+
+                    "ispolitician(#politicians).\n"+
+                    "south_movie(#movies).\n"+
+                    "bollywood_movie(#movies).\n"+
                     
     "rules\n"+
                     "prime_minister(narendra_modi).\n"+
                     "defence_minister(rajnath_singh).\n"+
                     "home_minister(amit_shah).\n"+
                     "famous_actor(shah_rukh_khan).\n"+
-                    "movie(bahubali).\n"+
+                    "leader(narendra_modi).\n"+
+
+                    "isprimeminister(X) :- prime_minister(X).\n"+
+                    "isprimeminister(X):- leader(X).\n"+
+                    "ispolitician(X):- prime_minister(X).\n"+
+                    "ispolitician(X):- defence_minister(X).\n"+
+                    "ispolitician(X):- home_minister(X).\n"+
+                    "south_movie(bahubali).\n"+
+                    "bollywood_movie(dangal).\n"+
+                    "movie(X):- south_movie(X).\n"+
+                    "movie(X):- bollywood_movie(X).\n"+
+
                     "capital(dispur, assam).\n"+
                     "capital(raipur, chhattisgarh).\n"+
                     "capital(itanagar, arunachalpradesh).\n"+
@@ -107,6 +124,8 @@ function getBotResponse(input) {
                     "capital(daman, dadraandnagarhavelianddamananddiu).\n"+
                     "capital(kavaratti, lakshadweep).\n"+
                     "capital(puducherry, puducherry).\n"+
+
+                    "iscapital(X,Y) :- capital(X,Y).\n"+
     
                     "famous_dish(masortenga, assam).\n"+
                     "famous_dish(muthia, chhattisgarh).\n"+
@@ -341,14 +360,21 @@ function getBotResponse(input) {
                         editor: editor
                     },
                     success: function (response) {
-                        console.log(response);
-                        if (response) {
-                            const justAns = response.split("=").pop().split('<')[0].toUpperCase();
-                            res = res + justAns.replaceAll("_"," ");
+                        console.log(response.includes("yes"));
+                        if(response.includes("yes")){
+                            res = "Yes, that's true.";
                             let botHtml = '<p class="botText"><img src="static/test1.jpg" alt="Avatar" style="float: left;max-width: 60px; width: 100%;margin-right: 20px;border-radius: 50%;"><span>' + res + '</span></p>';
                             $("#chatbox").append(botHtml);
                             document.getElementById("chat-bar-bottom").scrollIntoView(true);
-                        } else {
+                        }
+                      else if (response.includes("X")) {
+                        const justAns = response.split("=").pop().split('<')[0].toUpperCase();
+                        res = res + justAns.replaceAll("_"," ");
+                        let botHtml = '<p class="botText"><img src="static/test1.jpg" alt="Avatar" style="float: left;max-width: 60px; width: 100%;margin-right: 20px;border-radius: 50%;"><span>' + res + '</span></p>';
+                        $("#chatbox").append(botHtml);
+                        document.getElementById("chat-bar-bottom").scrollIntoView(true);
+                         } 
+                        else {
                             const answer = 'Sorry, I could not find an answer.';
                             let botHtml = '<p class="botText"><img src="static/test1.jpg" alt="Avatar" style="float: left;max-width: 60px; width: 100%;margin-right: 20px;border-radius: 50%;"><span>' + answer + '</span></p>';
                             $("#chatbox").append(botHtml);
